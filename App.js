@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, FlatList, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, FlatList, Alert, SafeAreaView, StatusBar, Platform } from 'react-native';
 import { AppRegistry } from 'react-native';
 
 // Empty initial data array
@@ -154,210 +154,220 @@ const FinanceTrackerApp = () => {
   );
 
   return (
-    <ScrollView style={styles.container}>
-      <View>
-        <Text style={styles.overallBalance}>
-          {overall.toLocaleString('tr-TR')} ₺
-        </Text>
-        <Text style={styles.subtitle}>Overall balance</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView style={styles.container}>
+        <View style={styles.headerSpacing}>
+          <Text style={styles.overallBalance}>
+            {overall.toLocaleString('tr-TR')} ₺
+          </Text>
+          <Text style={styles.subtitle}>Overall balance</Text>
 
-        <View style={styles.summaryContainer}>
-          <View style={styles.expenseCard}>
-            <Text style={styles.cardTitle}>Gaven</Text>
-            <Text style={styles.expenseAmount}>
-              {gaven.toLocaleString('tr-TR')} ₺
-            </Text>
-          </View>
-          <View style={styles.incomeCard}>
-            <Text style={styles.cardTitle}>Taken</Text>
-            <Text style={styles.incomeAmount}>
-              {taken.toLocaleString('tr-TR')} ₺
-            </Text>
+          <View style={styles.summaryContainer}>
+            <View style={styles.expenseCard}>
+              <Text style={styles.cardTitle}>Gaven</Text>
+              <Text style={styles.expenseAmount}>
+                {gaven.toLocaleString('tr-TR')} ₺
+              </Text>
+            </View>
+            <View style={styles.incomeCard}>
+              <Text style={styles.cardTitle}>Taken</Text>
+              <Text style={styles.incomeAmount}>
+                {taken.toLocaleString('tr-TR')} ₺
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
 
-      <TouchableOpacity 
-        style={styles.contactsToggle} 
-        onPress={() => setIsContactsVisible(!isContactsVisible)}
-      >
-        <Text style={styles.contactsToggleText}>
-          {isContactsVisible ? "Hide Contacts" : "Show Contacts"}
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.contactsToggle} 
+          onPress={() => setIsContactsVisible(!isContactsVisible)}
+        >
+          <Text style={styles.contactsToggleText}>
+            {isContactsVisible ? "Hide Contacts" : "Show Contacts"}
+          </Text>
+        </TouchableOpacity>
 
-      {isContactsVisible && (
-        <>
-          <View style={styles.searchContainer}>
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search contacts..."
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-            />
-          </View>
+        {isContactsVisible && (
+          <>
+            <View style={styles.searchContainer}>
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search contacts..."
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+              />
+            </View>
 
-          {filteredData.map((item, index) => (
-            <View key={item.id} style={styles.card}>
-              <View style={styles.cardHeader}>
-                <TouchableOpacity onPress={() => toggleExpand(index)} style={{ flex: 1 }}>
-                  <View>
-                    <Text style={styles.name}>{item.name}</Text>
-                    <Text style={styles.phone}>{item.phone}</Text>
-                  </View>
-                </TouchableOpacity>
-                <View style={styles.amountContainer}>
-                  <Text style={[styles.amount, { color: item.color }]}>
-                    {item.amount.toLocaleString('tr-TR')} ₺
-                  </Text>
-                  <TouchableOpacity 
-                    onPress={() => setMenuVisibleId(menuVisibleId === item.id ? null : item.id)}
-                    style={{ paddingHorizontal: 8 }}
-                  >
-                    <Text style={styles.threeDots}>⋮</Text>
+            {filteredData.map((item, index) => (
+              <View key={item.id} style={styles.card}>
+                <View style={styles.cardHeader}>
+                  <TouchableOpacity onPress={() => toggleExpand(index)} style={{ flex: 1 }}>
+                    <View>
+                      <Text style={styles.name}>{item.name}</Text>
+                      <Text style={styles.phone}>{item.phone}</Text>
+                    </View>
                   </TouchableOpacity>
-                </View>
-              </View>
-
-              {menuVisibleId === item.id && (
-                <View style={styles.menuContainer}>
-                  <TouchableOpacity 
-                    onPress={() => handleDeleteContact(item.id)}
-                    style={styles.deleteButton}
-                  >
-                    <Text style={styles.deleteButtonText}>DELETE contact</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-
-              {expandedIndex === index && (
-                <View style={styles.details}>
-                  <TextInput
-                    style={styles.input}
-                    value={item.name}
-                    onChangeText={(text) => handleUpdate(index, 'name', text)}
-                    placeholder="Name"
-                  />
-                  <TextInput
-                    style={styles.input}
-                    value={item.phone}
-                    onChangeText={(text) => handleUpdate(index, 'phone', text)}
-                    placeholder="Phone"
-                  />
-                  <View style={styles.amountInputContainer}>
-                    <TextInput
-                      style={[styles.amountInput, { color: item.color }]}
-                      value={item.amount.toString()}
-                      editable={false}
-                      placeholder="Current Amount"
-                    />
-                    <TextInput
-                      style={styles.newAmountInput}
-                      placeholder="Add new amount"
-                      value={newAmounts[index] || ''}
-                      onChangeText={(text) => {
-                        setNewAmounts(prev => ({ ...prev, [index]: text }));
-                      }}
-                      keyboardType='numeric'
-                    />
-                  </View>
-
-                  <View style={styles.buttonContainer}>
+                  <View style={styles.amountContainer}>
+                    <Text style={[styles.amount, { color: item.color }]}>
+                      {item.amount.toLocaleString('tr-TR')} ₺
+                    </Text>
                     <TouchableOpacity 
-                      onPress={() => applyNewAmount(index, true)} 
-                      style={styles.gavenButton}
+                      onPress={() => setMenuVisibleId(menuVisibleId === item.id ? null : item.id)}
+                      style={{ paddingHorizontal: 8 }}
                     >
+                      <Text style={styles.threeDots}>⋮</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                {menuVisibleId === item.id && (
+                  <View style={styles.menuContainer}>
+                    <TouchableOpacity 
+                      onPress={() => handleDeleteContact(item.id)}
+                      style={styles.deleteButton}
+                    >
+                      <Text style={styles.deleteButtonText}>DELETE contact</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+
+                {expandedIndex === index && (
+                  <View style={styles.details}>
+                    <TextInput
+                      style={styles.input}
+                      value={item.name}
+                      onChangeText={(text) => handleUpdate(index, 'name', text)}
+                      placeholder="Name"
+                    />
+                    <TextInput
+                      style={styles.input}
+                      value={item.phone}
+                      onChangeText={(text) => handleUpdate(index, 'phone', text)}
+                      placeholder="Phone"
+                    />
+                    <View style={styles.amountInputContainer}>
+                      <TextInput
+                        style={[styles.amountInput, { color: item.color }]}
+                        value={item.amount.toString()}
+                        editable={false}
+                        placeholder="Current Amount"
+                      />
+                      <TextInput
+                        style={styles.newAmountInput}
+                        placeholder="Add new amount"
+                        value={newAmounts[index] || ''}
+                        onChangeText={(text) => {
+                          setNewAmounts(prev => ({ ...prev, [index]: text }));
+                        }}
+                        keyboardType='numeric'
+                      />
+                    </View>
+
+                    <View style={styles.buttonContainer}>
+                      <TouchableOpacity 
+                        onPress={() => applyNewAmount(index, true)} 
+                        style={styles.gavenButton}
+                      >
+                        <Text style={styles.buttonText}>Gaven</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity 
+                        onPress={() => applyNewAmount(index, false)} 
+                        style={styles.takenButton}
+                      >
+                        <Text style={styles.buttonText}>Taken</Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    {item.history.length > 0 && (
+                      <View style={styles.historySection}>
+                        <Text style={styles.historyTitle}>Transaction History</Text>
+                        <FlatList
+                          data={item.history}
+                          keyExtractor={(_, idx) => idx.toString()}
+                          renderItem={({ item }) => (
+                            <View style={styles.historyItem}>
+                              <Text style={styles.historyText}>
+                                {item.date}
+                              </Text>
+                              <Text style={[
+                                styles.historyAmount, 
+                                { color: item.type === 'Gaven' ? '#FF4D4D' : '#66DE93' }
+                              ]}>
+                                {item.type}: {item.amount.toLocaleString('tr-TR')} ₺
+                              </Text>
+                            </View>
+                          )}
+                        />
+                      </View>
+                    )}
+                  </View>
+                )}
+              </View>
+            ))}
+
+            <View style={styles.newContactContainer}>
+              <TouchableOpacity 
+                style={styles.addContactHeader} 
+                onPress={() => setIsAddContactExpanded(!isAddContactExpanded)}
+              >
+                <Text style={styles.sectionTitle}>Add New Contact</Text>
+                <Text style={styles.toggleIcon}>
+                  {isAddContactExpanded ? '▲' : '▼'}
+                </Text>
+              </TouchableOpacity>
+
+              {isAddContactExpanded && (
+                <>
+                  <TextInput
+                    style={styles.input}
+                    placeholder='Name'
+                    value={newContact.name}
+                    onChangeText={(text) => setNewContact({ ...newContact, name: text })}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder='Phone'
+                    value={newContact.phone}
+                    onChangeText={(text) => setNewContact({ ...newContact, phone: text })}
+                    keyboardType='phone-pad'
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder='Amount'
+                    value={newContact.amount}
+                    onChangeText={(text) => setNewContact({ ...newContact, amount: text })}
+                    keyboardType='numeric'
+                  />
+                  <View style={styles.buttonContainer}>
+                    <TouchableOpacity onPress={() => addContact('Gaven')} style={styles.gavenButton}>
                       <Text style={styles.buttonText}>Gaven</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity 
-                      onPress={() => applyNewAmount(index, false)} 
-                      style={styles.takenButton}
-                    >
+                    <TouchableOpacity onPress={() => addContact('Taken')} style={styles.takenButton}>
                       <Text style={styles.buttonText}>Taken</Text>
                     </TouchableOpacity>
                   </View>
-
-                  {item.history.length > 0 && (
-                    <View style={styles.historySection}>
-                      <Text style={styles.historyTitle}>Transaction History</Text>
-                      <FlatList
-                        data={item.history}
-                        keyExtractor={(_, idx) => idx.toString()}
-                        renderItem={({ item }) => (
-                          <View style={styles.historyItem}>
-                            <Text style={styles.historyText}>
-                              {item.date}
-                            </Text>
-                            <Text style={[
-                              styles.historyAmount, 
-                              { color: item.type === 'Gaven' ? '#FF4D4D' : '#66DE93' }
-                            ]}>
-                              {item.type}: {item.amount.toLocaleString('tr-TR')} ₺
-                            </Text>
-                          </View>
-                        )}
-                      />
-                    </View>
-                  )}
-                </View>
+                </>
               )}
             </View>
-          ))}
-
-          <View style={styles.newContactContainer}>
-            <TouchableOpacity 
-              style={styles.addContactHeader} 
-              onPress={() => setIsAddContactExpanded(!isAddContactExpanded)}
-            >
-              <Text style={styles.sectionTitle}>Add New Contact</Text>
-              <Text style={styles.toggleIcon}>
-                {isAddContactExpanded ? '▲' : '▼'}
-              </Text>
-            </TouchableOpacity>
-
-            {isAddContactExpanded && (
-              <>
-                <TextInput
-                  style={styles.input}
-                  placeholder='Name'
-                  value={newContact.name}
-                  onChangeText={(text) => setNewContact({ ...newContact, name: text })}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder='Phone'
-                  value={newContact.phone}
-                  onChangeText={(text) => setNewContact({ ...newContact, phone: text })}
-                  keyboardType='phone-pad'
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder='Amount'
-                  value={newContact.amount}
-                  onChangeText={(text) => setNewContact({ ...newContact, amount: text })}
-                  keyboardType='numeric'
-                />
-                <View style={styles.buttonContainer}>
-                  <TouchableOpacity onPress={() => addContact('Gaven')} style={styles.gavenButton}>
-                    <Text style={styles.buttonText}>Gaven</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => addContact('Taken')} style={styles.takenButton}>
-                    <Text style={styles.buttonText}>Taken</Text>
-                  </TouchableOpacity>
-                </View>
-              </>
-            )}
-          </View>
-        </>
-      )}
-    </ScrollView>
+          </>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+  },
   container: { 
     padding: 20, 
-    backgroundColor: '#F5F5F5' 
+    backgroundColor: '#F5F5F5'
+  },
+  headerSpacing: {
+    marginTop: 20, // Add top margin to ensure content is visible below notch/camera
   },
   searchContainer: {
     marginBottom: 15,

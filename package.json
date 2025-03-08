@@ -5,7 +5,9 @@
   "main": "App.js",
   "dependencies": {
     "expo": "^52.0.37",
+    "i18next": "^24.2.2",
     "react": "^19.0.0",
+    "react-i18next": "^15.4.1",
     "react-native": "^0.78.0"
   },
   "devDependencies": {
@@ -22,7 +24,12 @@
     "type": "git",
     "url": "git+https://github.com/sultanSM6/loanote.git"
   },
-  "keywords": ["finance", "tracker", "expo", "react-native"],
+  "keywords": [
+    "finance",
+    "tracker",
+    "expo",
+    "react-native"
+  ],
   "author": "",
   "license": "ISC"
 }
