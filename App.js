@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, FlatList, Alert } from 'react-native';
+import { AppRegistry } from 'react-native';
 
 // Empty initial data array
 const initialData = [];
@@ -585,5 +586,8 @@ const styles = StyleSheet.create({
     color: '#007AFF',
   }
 });
+
+// Register the main component
+AppRegistry.registerComponent('main', () => FinanceTrackerApp);
 
 export default FinanceTrackerApp;

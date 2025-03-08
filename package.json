@@ -1,0 +1,28 @@
+{
+  "name": "loanote",
+  "version": "1.0.0",
+  "description": "Finance Tracker App",
+  "main": "App.js",
+  "dependencies": {
+    "expo": "^52.0.37",
+    "react": "^19.0.0",
+    "react-native": "^0.78.0"
+  },
+  "devDependencies": {
+    "@react-native-community/cli": "^17.0.0",
+    "babel-preset-expo": "^10.0.1"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sultanSM6/loanote.git"
+  },
+  "keywords": ["finance", "tracker", "expo", "react-native"],
+  "author": "",
+  "license": "ISC"
+}
